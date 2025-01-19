@@ -1,0 +1,6 @@
+recording id,wearer id,wearer name,section start time [ns],section end time [ns],start event name,end event name
+00079675-ce50-4d34-a3ee-1b7229d4b4ad,b818decc-bdc1-4c78-9f66-76e309e7d3c3,Orel,1.73434E+18,1.73434E+18,recording.begin,recording.end
+71a2ba67-1c9e-4a87-906a-6992b40e04c7,6ebe8d59-2038-4971-8e8b-f041ad5c6d3c,2508,1.73486E+18,1.73486E+18,recording.begin,recording.end
+831783b3-db8c-4694-ab40-000b7073cdd4,b818decc-bdc1-4c78-9f66-76e309e7d3c3,Orel,1.7346E+18,1.7346E+18,recording.begin,recording.end
+ae30e625-5b46-400f-a958-2a3bd3e0dc91,b818decc-bdc1-4c78-9f66-76e309e7d3c3,Orel,1.73293E+18,1.73294E+18,recording.begin,recording.end
+bd66a9f1-27b2-4d77-bc43-552ac7c51f76,b818decc-bdc1-4c78-9f66-76e309e7d3c3,Orel,1.73435E+18,1.73435E+18,recording.begin,recording.end
