@@ -26,14 +26,16 @@ def split_csv_by_recording_id(input_file, output_dir):
         df_recording = df[df['recording id'] == recording_id].copy()
         new_recording_id = recording_id_map[recording_id]
         df_recording.loc[:, 'recording id'] = new_recording_id
-        output_file = os.path.join(output_dir, f"{new_recording_id}.csv")
+        participant_folder = os.path.join(output_dir, new_recording_id)
+        os.makedirs(participant_folder, exist_ok=True)
+        output_file = os.path.join(participant_folder, f"{new_recording_id}.csv")
         df_recording.to_csv(output_file, index=False)
     
     return recording_id_map
 
 # running the function
 input_file = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face.csv'
-output_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face_by_recording'
+output_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
 recording_id_map = split_csv_by_recording_id(input_file, output_dir)
 
 def clean_participants_folders(recording_id_map):
@@ -43,41 +45,46 @@ def clean_participants_folders(recording_id_map):
     Also match the 'recording id' in the fixations_on_face_by_recording files to the new folder names by the recording id.
     """
     participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
-    fixations_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face_by_recording'
     
     # Get list of participant folders and sort them
     participant_folders = sorted(os.listdir(participants_dir))
     
-    # Rename participant folders to sequential numbers based on the recording_id_map
+    # Combine files into the folder {new_recording_id}
     for folder in participant_folders:
         old_folder_path = os.path.join(participants_dir, folder)
-        # Check if the folder name contains the first 8 characters of any recording id
         matching_recording_id = next((rid for rid in recording_id_map if rid[:8] in folder), None)
         if matching_recording_id:
             new_folder_name = recording_id_map[matching_recording_id]
             new_folder_path = os.path.join(participants_dir, new_folder_name)
-            os.rename(old_folder_path, new_folder_path)
+            if not os.path.exists(new_folder_path):
+                os.makedirs(new_folder_path)
             
-            # Keep only specific files and update 'recording id' column
-            for file_name in os.listdir(new_folder_path):
+            # Move files to the new folder and update 'recording id' column
+            for file_name in os.listdir(old_folder_path):
                 if file_name in ['blinks.csv', 'events.csv', 'saccades.csv']:
-                    file_path = os.path.join(new_folder_path, file_name)
-                    df = pd.read_csv(file_path)
+                    old_file_path = os.path.join(old_folder_path, file_name)
+                    new_file_path = os.path.join(new_folder_path, file_name)
+                    df = pd.read_csv(old_file_path)
                     df['recording id'] = new_folder_name
-                    df.to_csv(file_path, index=False)
+                    df.to_csv(new_file_path, index=False)
+                    os.remove(old_file_path)
                 else:
-                    os.remove(os.path.join(new_folder_path, file_name))
+                    os.remove(os.path.join(old_folder_path, file_name))
+            os.rmdir(old_folder_path)
     
-    # Update 'recording id' in fixations_on_face_by_recording files and rename files
+    # Define the fixations directory
+    fixations_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face_by_recording'
+    
+    # Move fixations files to the new folders and update 'recording id'
     for file_name in os.listdir(fixations_dir):
         old_file_path = os.path.join(fixations_dir, file_name)
         original_recording_id = file_name.split('.')[0]
         if original_recording_id in recording_id_map:
-            new_file_name = recording_id_map[original_recording_id] + '.csv'
-            new_file_path = os.path.join(fixations_dir, new_file_name)
+            new_folder_name = recording_id_map[original_recording_id]
+            new_file_path = os.path.join(participants_dir, new_folder_name, f"{new_folder_name}.csv")
             
             df = pd.read_csv(old_file_path)
-            df['recording id'] = new_file_name.split('.')[0]
+            df['recording id'] = new_folder_name
             df.to_csv(new_file_path, index=False)
             
             os.remove(old_file_path)
