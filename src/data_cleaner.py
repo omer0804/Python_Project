@@ -1,10 +1,6 @@
 import pandas as pd
 import os
 
-import importlib.util
-
-def is_xlsxwriter_available():
-    return importlib.util.find_spec("xlsxwriter") is not None
 
 def split_csv_by_recording_id(input_file, output_dir):
     """
@@ -132,3 +128,61 @@ remove_unecessary_columns(participants_dir, participant_folders)
 
 # # running the debug function
 # print_recording_id_map(recording_id_map)
+
+def label_trials(df, events):
+    df['trial_id'] = None
+    df['trial_type'] = None
+
+    for _, event in events.iterrows():
+        if '-' in event['name']:
+            trial_type = "quiet" if "start" in event['name'] and "dist" not in event['name'] else "noisy"
+            trial_id = int(event['name'].split('-')[1])
+            start_time = event['timestamp [ns]']
+
+            # Identify the corresponding end time
+            end_event_name = f"end-{trial_id}"
+            end_time_series = events[events['name'] == end_event_name]['timestamp [ns]']
+            if not end_time_series.empty:
+                end_time = end_time_series.iloc[0]
+            else:
+                continue
+
+            # Label rows within the time range
+            mask = (df['start timestamp [ns]'] >= start_time) & (df['start timestamp [ns]'] <= end_time)
+            if mask.any():
+                df.loc[mask, 'trial_id'] = trial_id
+                df.loc[mask, 'trial_type'] = trial_type
+
+    return df
+
+# Example usage
+for folder in participant_folders:
+    folder_path = os.path.join(participants_dir, folder)
+    events_file = os.path.join(folder_path, 'events.csv')
+    events_df = pd.read_csv(events_file)
+    for file_name in os.listdir(folder_path):
+        if file_name in ['fixations_on_face.csv', 'blinks.csv', 'saccades.csv']:
+            file_path = os.path.join(folder_path, file_name)
+            df = pd.read_csv(file_path)
+            df = label_trials(df, events_df)
+            df.to_csv(file_path, index=False)
+
+def delete_data_not_in_trials(participants_dir, participant_folders):
+    """
+    Delete rows in the fixations_on_face.csv, blinks.csv, and saccades.csv files that are not part of a trial.
+    """
+    for folder in participant_folders:
+        folder_path = os.path.join(participants_dir, folder)
+        events_file = os.path.join(folder_path, 'events.csv')
+        events_df = pd.read_csv(events_file)
+        for file_name in os.listdir(folder_path):
+            if file_name in ['fixations_on_face.csv', 'blinks.csv', 'saccades.csv']:
+                file_path = os.path.join(folder_path, file_name)
+                df = pd.read_csv(file_path)
+                trial_ids = events_df['name'].apply(lambda x: x.split('-')[1] if '-' in x else None).dropna().astype(int)
+                df = df[df['trial_id'].isin(trial_ids)]
+                df.to_csv(file_path, index=False)
+    
+# running the function
+delete_data_not_in_trials(participants_dir, participant_folders)
+    

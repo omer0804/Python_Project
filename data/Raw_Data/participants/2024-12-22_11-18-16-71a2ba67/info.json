@@ -1,0 +1,32 @@
+{
+    "android_device_id": "1e5030ee212e4c50",
+    "android_device_model": "OnePlus8T_EEA",
+    "android_device_name": "School",
+    "app_version": "1.4.30-prod",
+    "calib_version": 1,
+    "data_format_version": "1.4",
+    "duration": 1644379000000,
+    "gaze_offset": [
+        0.0,
+        0.0
+    ],
+    "glasses_serial_number": "m6azd",
+    "os_version": "11",
+    "pipeline_version": "1.10.0",
+    "recording_id": "71a2ba67-1c9e-4a87-906a-6992b40e04c7",
+    "scene_camera_serial_number": "qc3za",
+    "start_time": 1734859096156000000,
+    "template_data": {
+        "data": {
+            "dcc48956-fa4c-4e82-a562-f4b5f68c08d0": [
+                ""
+            ]
+        },
+        "id": "da77fbe0-7eb6-4a08-9ede-9fbef075ec7a",
+        "recording_name": "2024-12-22_11:18:16",
+        "version": "2023-03-06T11:41:53.805725Z"
+    },
+    "wearer_id": "6ebe8d59-2038-4971-8e8b-f041ad5c6d3c",
+    "wearer_name": "2508",
+    "workspace_id": "1a09ab67-139e-47a1-a533-56e56647be07"
+}
