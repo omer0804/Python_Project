@@ -15,9 +15,6 @@ def split_csv_by_recording_id(input_file, output_dir):
     # Create a dictionary to map original recording ids to new sequential numbers
     recording_id_map = {recording_id: str(idx + 1) for idx, recording_id in enumerate(recording_ids)}
     
-    # Print the dictionary for debugging
-    print("Recording ID Map:", recording_id_map)
-    
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
     
@@ -28,7 +25,7 @@ def split_csv_by_recording_id(input_file, output_dir):
         df_recording.loc[:, 'recording id'] = new_recording_id
         participant_folder = os.path.join(output_dir, new_recording_id)
         os.makedirs(participant_folder, exist_ok=True)
-        output_file = os.path.join(participant_folder, f"{new_recording_id}.csv")
+        output_file = os.path.join(participant_folder, "fixations_on_face.csv")
         df_recording.to_csv(output_file, index=False)
     
     return recording_id_map
@@ -81,7 +78,7 @@ def clean_participants_folders(recording_id_map):
         original_recording_id = file_name.split('.')[0]
         if original_recording_id in recording_id_map:
             new_folder_name = recording_id_map[original_recording_id]
-            new_file_path = os.path.join(participants_dir, new_folder_name, f"{new_folder_name}.csv")
+            new_file_path = os.path.join(participants_dir, new_folder_name, "fixations_on_face.csv")
             
             df = pd.read_csv(old_file_path)
             df['recording id'] = new_folder_name
@@ -91,3 +88,36 @@ def clean_participants_folders(recording_id_map):
 
 # running the function
 clean_participants_folders(recording_id_map)
+
+def remove_unecessary_columns(participants_dir, participant_folders):
+    """  
+    Remove 'type', 'recording id', 'section id' columns from all files in the participant folders.
+    """ 
+    for folder in participant_folders:
+        folder_path = os.path.join(participants_dir, folder)
+        for file_name in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file_name)
+            # check if the file has 'type', 'recording id', 'section id' columns and delete them
+            df = pd.read_csv(file_path)
+            if 'type' in df.columns:
+                df.drop(columns=['type'], inplace=True)
+            if 'recording id' in df.columns:
+                df.drop(columns=['recording id'], inplace=True)
+            if 'section id' in df.columns:
+                df.drop(columns=['section id'], inplace=True)
+            df.to_csv(file_path, index=False)
+
+# running the function
+participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+participant_folders = sorted(os.listdir(participants_dir))
+remove_unecessary_columns(participants_dir, participant_folders)
+
+def print_recording_id_map(recording_id_map):
+    """
+    Print the recording ID map for debugging purposes.
+    """
+    print("Recording ID Map:", recording_id_map)
+
+# running the debug function
+print_recording_id_map(recording_id_map)
+
