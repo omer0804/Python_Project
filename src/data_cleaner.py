@@ -1,6 +1,11 @@
 import pandas as pd
 import os
 
+import importlib.util
+
+def is_xlsxwriter_available():
+    return importlib.util.find_spec("xlsxwriter") is not None
+
 def split_csv_by_recording_id(input_file, output_dir):
     """
     Split a CSV file of fixations on face by 'recording id' (per participant) column and save each subset to a separate CSV file.
@@ -64,9 +69,15 @@ def clean_participants_folders(recording_id_map):
                     df = pd.read_csv(old_file_path)
                     df['recording id'] = new_folder_name
                     df.to_csv(new_file_path, index=False)
-                    os.remove(old_file_path)
+                    if os.path.exists(old_file_path):
+                        os.remove(old_file_path)
                 else:
-                    os.remove(os.path.join(old_folder_path, file_name))
+                    file_path = os.path.join(old_folder_path, file_name)
+                    if os.path.exists(file_path):
+                        try:
+                            os.remove(file_path)
+                        except PermissionError:
+                            print(f"Could not delete {file_path} because it is being used by another process.")
             os.rmdir(old_folder_path)
     
     # Define the fixations directory
@@ -112,12 +123,12 @@ participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project
 participant_folders = sorted(os.listdir(participants_dir))
 remove_unecessary_columns(participants_dir, participant_folders)
 
-def print_recording_id_map(recording_id_map):
-    """
-    Print the recording ID map for debugging purposes.
-    """
-    print("Recording ID Map:", recording_id_map)
+# for debugging purposes #
+# def print_recording_id_map(recording_id_map):
+#     """
+#     Print the recording ID map for debugging purposes.
+#     """
+#     print("Recording ID Map:", recording_id_map)
 
-# running the debug function
-print_recording_id_map(recording_id_map)
-
+# # running the debug function
+# print_recording_id_map(recording_id_map)
