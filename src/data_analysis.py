@@ -46,9 +46,9 @@ def process_all_subjects_globally():
                     for trial_type in ['noisy', 'quiet']:
                         trial_data = df_file[df_file['trial_type'] == trial_type]
                         data[trial_type][data_type]['quantity'] = len(trial_data)
-                        data[trial_type][data_type]['duration'] = (trial_data['end timestamp [ns]'].sum() - trial_data['start timestamp [ns]'].sum()) / 1e9
+                        data[trial_type][data_type]['duration'] = ((trial_data['end timestamp [ns]'] - trial_data['start timestamp [ns]']).mean()) / 1e9
                     data['overall'][data_type]['quantity'] = len(df_file)
-                    data['overall'][data_type]['duration'] = (df_file['end timestamp [ns]'].sum() - df_file['start timestamp [ns]'].sum()) / 1e9
+                    data['overall'][data_type]['duration'] = ((df_file['end timestamp [ns]'] - df_file['start timestamp [ns]']).mean()) / 1e9
 
             df.loc[participant] = [data['noisy']['fixations_on_face']['quantity'], data['noisy']['fixations_on_face']['duration'],
                                    data['noisy']['saccades']['quantity'], data['noisy']['saccades']['duration'],
