@@ -108,8 +108,12 @@ def dataframe_by_trial_id():
     trial_df.loc['average'] = trial_df.mean()
     trial_df.loc['std_dev'] = trial_df.std()
 
+    # Ensure the Clean_data directory exists
+    clean_data_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data'
+    os.makedirs(clean_data_dir, exist_ok=True)
+    
     # Save the trial DataFrame
-    trial_df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\trial_summary.csv')
+    trial_df.to_csv(os.path.join(clean_data_dir, 'trial_summary.csv'), index=False)
 
     return trial_df
 
