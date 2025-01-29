@@ -40,7 +40,6 @@ def clean_participants_folders(recording_id_map):
     """
     Clean up the participants folders by renaming them to a sequential number and keeping only specific files (blinks, events, saccades).
     Also update the 'recording id' column in the files to match the new folder names.
-    Also match the 'recording id' in the fixations_on_face_by_recording files to the new folder names by the recording id.
     """
     participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
     
@@ -59,7 +58,7 @@ def clean_participants_folders(recording_id_map):
             
             # Move files to the new folder and update 'recording id' column
             for file_name in os.listdir(old_folder_path):
-                if file_name in ['blinks.csv', 'events.csv', 'saccades.csv']:
+                if file_name in ['blinks.csv', 'events.csv', 'saccades.csv', 'fixations_on_face.csv']:
                     old_file_path = os.path.join(old_folder_path, file_name)
                     new_file_path = os.path.join(new_folder_path, file_name)
                     df = pd.read_csv(old_file_path)
@@ -75,23 +74,6 @@ def clean_participants_folders(recording_id_map):
                         except PermissionError:
                             print(f"Could not delete {file_path} because it is being used by another process.")
             os.rmdir(old_folder_path)
-    
-    # Define the fixations directory
-    fixations_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face_by_recording'
-    
-    # Move fixations files to the new folders and update 'recording id'
-    for file_name in os.listdir(fixations_dir):
-        old_file_path = os.path.join(fixations_dir, file_name)
-        original_recording_id = file_name.split('.')[0]
-        if original_recording_id in recording_id_map:
-            new_folder_name = recording_id_map[original_recording_id]
-            new_file_path = os.path.join(participants_dir, new_folder_name, "fixations_on_face.csv")
-            
-            df = pd.read_csv(old_file_path)
-            df['recording id'] = new_folder_name
-            df.to_csv(new_file_path, index=False)
-            
-            os.remove(old_file_path)
 
 # running the function
 clean_participants_folders(recording_id_map)
@@ -175,4 +157,3 @@ def delete_data_not_in_trials(participants_dir, participant_folders):
     
 # running the function
 delete_data_not_in_trials(participants_dir, participant_folders)
-    
