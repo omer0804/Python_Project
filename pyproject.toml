@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Eye_Tracker_Analyzer"
+version = "0.1.0"
+description = "Eye tracker data analyzer and visualizer for school experiment"
+authors = [
+    { name = "Omer Aharonovich", email = "omer.aharonovich@live.biu.ac.il" },
+    { name = "Yaarah Edel", email = "yaarah.edel@example.com" }
+]
+dependencies = [
+    "numpy>=2.2",
+    "pandas>=2.2",
+    "matplotlib>=3.10"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]

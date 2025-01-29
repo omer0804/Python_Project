@@ -119,16 +119,6 @@ participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project
 participant_folders = sorted(os.listdir(participants_dir))
 remove_unecessary_columns(participants_dir, participant_folders)
 
-# for debugging purposes #
-# def print_recording_id_map(recording_id_map):
-#     """
-#     Print the recording ID map for debugging purposes.
-#     """
-#     print("Recording ID Map:", recording_id_map)
-
-# # running the debug function
-# print_recording_id_map(recording_id_map)
-
 def label_trials(df, events):
     df['trial_id'] = None
     df['trial_type'] = None

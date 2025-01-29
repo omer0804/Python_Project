@@ -4,14 +4,11 @@ import pandas as pd
 # Calculate the average for each experimenter and each variable
 def create_clean_data_folder():
     r"""create a folder for Clean_data in C:\Users\USER\Desktop\Advanced Python Course\Python Project\data
-    inside it we will have 3 folders: blinks, saccaades, fixations on face, skip it if it already exists
+    skip it if it already exists
     """
     clean_data_folder = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data'
     if not os.path.exists(clean_data_folder):
         os.mkdir(clean_data_folder)
-        os.mkdir(os.path.join(clean_data_folder, 'blinks'))
-        os.mkdir(os.path.join(clean_data_folder, 'saccades'))
-        os.mkdir(os.path.join(clean_data_folder, 'fixations_on_face'))
     else:
         print('Clean_data folder already exists.')
     
@@ -65,12 +62,6 @@ def process_all_subjects_noisy_and_quiet():
 
     return df
 
-# running the function
-create_clean_data_folder()
-df = process_all_subjects_noisy_and_quiet()
-df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\summary.csv')
-print(df)
-
 def dataframe_by_trial_id():
     base_path = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
     trial_ids = set()
@@ -122,13 +113,11 @@ def dataframe_by_trial_id():
 
     return trial_df
 
-# running the function
-create_clean_data_folder()
+# running the functions
 df = process_all_subjects_noisy_and_quiet()
 df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\summary.csv')
-print(df)
 
 trial_df = dataframe_by_trial_id()
 trial_df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\trial_summary.csv')
-print(trial_df)
+
 
