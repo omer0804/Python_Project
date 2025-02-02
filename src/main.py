@@ -2,8 +2,9 @@ import subprocess
 import os
 
 def run_script(script_name):
-    venv_python = os.path.join('C:\\Users\\USER\\Desktop\\Advanced Python Course\\Python Project\\.venv\\Scripts\\python.exe')
-    script_path = os.path.join('C:\\Users\\USER\\Desktop\\Advanced Python Course\\Python Project\\src', script_name)
+    project_dir = os.path.dirname(os.path.dirname(__file__))
+    venv_python = os.path.join(project_dir, '.venv', 'Scripts', 'python.exe')
+    script_path = os.path.join(project_dir, 'src', script_name)
     try:
         subprocess.run([venv_python, script_path], check=True)
         print(f"{script_name} ran successfully.")

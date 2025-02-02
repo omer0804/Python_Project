@@ -6,7 +6,7 @@ def create_clean_data_folder():
     r"""create a folder for Clean_data in C:\Users\USER\Desktop\Advanced Python Course\Python Project\data
     skip it if it already exists
     """
-    clean_data_folder = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data'
+    clean_data_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data')
     if not os.path.exists(clean_data_folder):
         os.mkdir(clean_data_folder)
     else:
@@ -16,7 +16,7 @@ def create_clean_data_folder():
 create_clean_data_folder()
 
 def process_all_subjects_noisy_and_quiet():
-    base_path = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+    base_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
     columns = pd.MultiIndex.from_product([['noisy', 'quiet', 'overall'], 
                                           ['fixations_on_face', 'saccades', 'blinks'], 
                                           ['quantity', 'duration']])
@@ -60,10 +60,12 @@ def process_all_subjects_noisy_and_quiet():
     df.loc['average'] = df.mean()
     df.loc['std_dev'] = df.std()
 
+    df.to_csv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data', 'summary.csv'))
+
     return df
 
 def dataframe_by_trial_id():
-    base_path = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+    base_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
     trial_ids = set()
     
     # Collect all unique trial IDs
@@ -109,7 +111,7 @@ def dataframe_by_trial_id():
     trial_df.loc['std_dev'] = trial_df.std()
 
     # Ensure the Clean_data directory exists
-    clean_data_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data'
+    clean_data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data')
     os.makedirs(clean_data_dir, exist_ok=True)
     
     # Save the trial DataFrame
@@ -119,9 +121,9 @@ def dataframe_by_trial_id():
 
 # running the functions
 df = process_all_subjects_noisy_and_quiet()
-df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\summary.csv')
+df.to_csv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data', 'summary.csv'))
 
 trial_df = dataframe_by_trial_id()
-trial_df.to_csv(r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data\trial_summary.csv')
+trial_df.to_csv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data', 'trial_summary.csv'))
 
 

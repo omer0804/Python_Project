@@ -32,8 +32,8 @@ def split_csv_by_recording_id(input_file, output_dir):
     return recording_id_map
 
 # running the function
-input_file = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\fixations_on_face.csv'
-output_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+input_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'fixations_on_face.csv')
+output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
 recording_id_map = split_csv_by_recording_id(input_file, output_dir)
 
 def clean_participants_folders(recording_id_map):
@@ -41,7 +41,7 @@ def clean_participants_folders(recording_id_map):
     Clean up the participants folders by renaming them to a sequential number and keeping only specific files (blinks, events, saccades).
     Also update the 'recording id' column in the files to match the new folder names.
     """
-    participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+    participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
     
     # Get list of participant folders and sort them
     participant_folders = sorted(os.listdir(participants_dir))
@@ -97,7 +97,7 @@ def remove_unecessary_columns(participants_dir, participant_folders):
             df.to_csv(file_path, index=False)
 
 # running the function
-participants_dir = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Raw_Data\participants'
+participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
 participant_folders = sorted(os.listdir(participants_dir))
 remove_unecessary_columns(participants_dir, participant_folders)
 
@@ -156,4 +156,6 @@ def delete_data_not_in_trials(participants_dir, participant_folders):
                 df.to_csv(file_path, index=False)
     
 # running the function
+participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
+participant_folders = sorted(os.listdir(participants_dir))
 delete_data_not_in_trials(participants_dir, participant_folders)

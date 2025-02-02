@@ -2,17 +2,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 # Use the Agg backend for matplotlib
 import matplotlib
 matplotlib.use('Agg')
 
 # Base path for saving plots
-BASE_PATH = r'C:\Users\USER\Desktop\Advanced Python Course\Python Project\data\Clean_data'
+BASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Clean_data')
 
 # Load the data  
-data_noisy_quiet = pd.read_csv(f'{BASE_PATH}/summary.csv', index_col=0, header=[0, 1, 2])
-data_by_trials = pd.read_csv(f'{BASE_PATH}/trial_summary.csv', index_col=0, header=[0, 1, 2])
+data_noisy_quiet = pd.read_csv(os.path.join(BASE_PATH, 'summary.csv'), index_col=0, header=[0, 1, 2])
+data_by_trials = pd.read_csv(os.path.join(BASE_PATH, 'trial_summary.csv'), index_col=0, header=[0, 1, 2])
 
 # Data validation
 if 'average' not in data_noisy_quiet.index or 'std_dev' not in data_noisy_quiet.index:
@@ -39,7 +40,7 @@ def plot_metric_noisy_vs_quiet(data, metric, title_prefix, filename_prefix):
     axes[1].set_ylabel('Duration (s)')
 
     plt.tight_layout()
-    plt.savefig(f'{BASE_PATH}/{filename_prefix}_noisy_vs_quiet.png')
+    plt.savefig(os.path.join(BASE_PATH, f'{filename_prefix}_noisy_vs_quiet.png'))
 
 # Plotting functions for different metrics
 plot_metric_noisy_vs_quiet(data_noisy_quiet, 'fixations_on_face', 'Fixations on Face', 'fixations')
@@ -75,7 +76,7 @@ def plot_metric_per_trial(data, metric, title_prefix, filename_prefix):
     axes[1].set_ylabel('Duration (s)')
 
     plt.tight_layout()
-    plt.savefig(f'{BASE_PATH}/{filename_prefix}_per_trial.png')
+    plt.savefig(os.path.join(BASE_PATH, f'{filename_prefix}_per_trial.png'))
 
 # Plotting functions for different metrics per trial
 plot_metric_per_trial(data_by_trials, 'fixations_on_face', 'Fixations on Face', 'fixations')
