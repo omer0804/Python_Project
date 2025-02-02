@@ -4,20 +4,20 @@ import os
 
 def split_csv_by_recording_id(input_file, output_dir):
     """
-    Split a CSV file of fixations on face by 'recording id' (per participant) column and save each subset to a separate CSV file.
-    Also, create a dictionary mapping original recording ids to new sequential numbers.
+    Split a CSV file of fixations on face by 'recording id' (per participant) column and save each recording id to a separate CSV file.
+    Also, create a dictionary mapping original recording ids to new sequential numbers.(for my comfort)
     """
     # Read the CSV file
     df = pd.read_csv(input_file)
     
     # Get unique recording ids
-    recording_ids = df['recording id'].unique()
+    recording_ids = df['recording id'].unique() #rn only 5, 60 in future
     
     # Create a dictionary to map original recording ids to new sequential numbers
-    recording_id_map = {recording_id: str(idx + 1) for idx, recording_id in enumerate(recording_ids)}
+    recording_id_map = {recording_id: str(idx + 1) for idx, recording_id in enumerate(recording_ids)} # +1 to start from 1
     
     # Ensure the output directory exists
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True) #participants dir
     
     # Split the dataframe by recording id and save to separate CSV files
     for recording_id in recording_ids:
@@ -29,7 +29,7 @@ def split_csv_by_recording_id(input_file, output_dir):
         output_file = os.path.join(participant_folder, "fixations_on_face.csv")
         df_recording.to_csv(output_file, index=False)
     
-    return recording_id_map
+    return recording_id_map 
 
 # running the function
 input_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'fixations_on_face.csv')
@@ -72,7 +72,7 @@ def clean_participants_folders(recording_id_map):
                         try:
                             os.remove(file_path)
                         except PermissionError:
-                            print(f"Could not delete {file_path} because it is being used by another process.")
+                            print(f"Could not delete {file_path} because it is open.")
             os.rmdir(old_folder_path)
 
 # running the function
@@ -127,7 +127,7 @@ def label_trials(df, events):
 
     return df
 
-# Example usage
+
 for folder in participant_folders:
     folder_path = os.path.join(participants_dir, folder)
     events_file = os.path.join(folder_path, 'events.csv')
@@ -155,7 +155,7 @@ def delete_data_not_in_trials(participants_dir, participant_folders):
                 df = df[df['trial_id'].isin(trial_ids)]
                 df.to_csv(file_path, index=False)
     
-# running the function
+# running delete_data_not_in_trials
 participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
 participant_folders = sorted(os.listdir(participants_dir))
 delete_data_not_in_trials(participants_dir, participant_folders)
