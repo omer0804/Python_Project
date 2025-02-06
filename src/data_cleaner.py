@@ -31,11 +31,6 @@ def split_csv_by_recording_id(input_file, output_dir):
     
     return recording_id_map 
 
-# running the function
-input_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'fixations_on_face.csv')
-output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
-recording_id_map = split_csv_by_recording_id(input_file, output_dir)
-
 def clean_participants_folders(recording_id_map):
     """
     Clean up the participants folders by renaming them to a sequential number and keeping only specific files (blinks, events, saccades).
@@ -75,9 +70,6 @@ def clean_participants_folders(recording_id_map):
                             print(f"Could not delete {file_path} because it is open.")
             os.rmdir(old_folder_path)
 
-# running the function
-clean_participants_folders(recording_id_map)
-
 def remove_unecessary_columns(participants_dir, participant_folders):
     """  
     Remove 'type', 'recording id', 'section id' columns from all files in the participant folders.
@@ -95,11 +87,6 @@ def remove_unecessary_columns(participants_dir, participant_folders):
             if 'section id' in df.columns:
                 df.drop(columns=['section id'], inplace=True)
             df.to_csv(file_path, index=False)
-
-# running the function
-participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
-participant_folders = sorted(os.listdir(participants_dir))
-remove_unecessary_columns(participants_dir, participant_folders)
 
 def label_trials(df, events):
     df['trial_id'] = None
@@ -127,18 +114,6 @@ def label_trials(df, events):
 
     return df
 
-
-for folder in participant_folders:
-    folder_path = os.path.join(participants_dir, folder)
-    events_file = os.path.join(folder_path, 'events.csv')
-    events_df = pd.read_csv(events_file)
-    for file_name in os.listdir(folder_path):
-        if file_name in ['fixations_on_face.csv', 'blinks.csv', 'saccades.csv']:
-            file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path)
-            df = label_trials(df, events_df)
-            df.to_csv(file_path, index=False)
-
 def delete_data_not_in_trials(participants_dir, participant_folders):
     """
     Delete rows in the fixations_on_face.csv, blinks.csv, and saccades.csv files that are not part of a trial.
@@ -155,7 +130,26 @@ def delete_data_not_in_trials(participants_dir, participant_folders):
                 df = df[df['trial_id'].isin(trial_ids)]
                 df.to_csv(file_path, index=False)
     
-# running delete_data_not_in_trials
-participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
-participant_folders = sorted(os.listdir(participants_dir))
-delete_data_not_in_trials(participants_dir, participant_folders)
+if __name__ == "__main__":
+    input_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'fixations_on_face.csv')
+    output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
+    recording_id_map = split_csv_by_recording_id(input_file, output_dir)
+    
+    clean_participants_folders(recording_id_map)
+    
+    participants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'Raw_Data', 'participants')
+    participant_folders = sorted(os.listdir(participants_dir))
+    remove_unecessary_columns(participants_dir, participant_folders)
+    
+    for folder in participant_folders:
+        folder_path = os.path.join(participants_dir, folder)
+        events_file = os.path.join(folder_path, 'events.csv')
+        events_df = pd.read_csv(events_file)
+        for file_name in os.listdir(folder_path):
+            if file_name in ['fixations_on_face.csv', 'blinks.csv', 'saccades.csv']:
+                file_path = os.path.join(folder_path, file_name)
+                df = pd.read_csv(file_path)
+                df = label_trials(df, events_df)
+                df.to_csv(file_path, index=False)
+    
+    delete_data_not_in_trials(participants_dir, participant_folders)
